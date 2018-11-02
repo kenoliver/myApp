@@ -14,7 +14,7 @@ import {
   listenOrientationChange as loc,
   removeOrientationListener as rol
 } from "react-native-responsive-screen";
-
+import { setItem } from "../services/storage";
 export class Home extends Component {
   renderButton(title, routeName) {
     return (
@@ -31,6 +31,7 @@ export class Home extends Component {
   }
 
   render() {
+   
     return (
       <View style={styles.container}>
        
@@ -46,7 +47,7 @@ export class Home extends Component {
         </View>
         {this.renderButton("New Match", "NonLeaguePlay")}
         {this.renderButton("New Player", "AddPlayer")}
-        {this.renderButton("All Matches", "Main")}
+        {this.renderButton("All Matches", "ViewMatches")}
         {this.renderButton("All Players", "Main")}
       </View>
     );

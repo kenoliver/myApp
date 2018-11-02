@@ -71,6 +71,7 @@ export default class Scorer extends Component {
 
   endPress() {
     let match = this.state.match.matchData;
+    match.complete=true;
     var obj = null;
     getItem("matches")
       .then(data => {
@@ -87,7 +88,7 @@ export default class Scorer extends Component {
           } else {
             data[index] = match;
           }
-
+         
           this.setState({ allMatches: data }, () => {
             setItem("matches", this.state.allMatches).done();
           });

@@ -15,5 +15,6 @@ export class MatchData {
       { name: "Steve", order: 1, index: 1, id: "player-2", flag: "NR" }
     ];
     this.scores = [];
+    this.complete = false
   } 
 }
