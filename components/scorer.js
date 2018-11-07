@@ -4,6 +4,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { AddScore } from "../services/addScore";
 import { AddRow } from "../services/addRow";
 import { Match } from "../services/match";
+import HeaderButton from "./headerButton";
 import Modal from "react-native-modal";
 import {
   AppRegistry,
@@ -43,24 +44,25 @@ export default class Scorer extends Component {
     dartsThrown: 3,
     rows: [],
     modalVisible: 0,
+    endGameVisible : false,
     finished: false,
     allMatches: []
   };
 
   static navigationOptions = ({ navigation }) => ({
     headerRight: (
-      <View style={styles.navButton}>
-        <TouchableOpacity onPress={navigation.getParam("endPress")}>
-          <Text style={styles.navText}>END GAME</Text>
-        </TouchableOpacity>
-      </View>
+        <HeaderButton title="END GAME" onPress={navigation.getParam("endPress")}/>
+        // <TouchableOpacity style={styles.navButton} onPress={navigation.getParam("endPress")}>
+        //   <Text style={styles.navText}>END GAME</Text>
+        // </TouchableOpacity>
+     
     ),
     headerLeft: (
-      <View style={styles.navButton}>
-        <TouchableOpacity onPress={navigation.getParam("statsPress")}>
-          <Text style={styles.navText}>STATS</Text>
-        </TouchableOpacity>
-      </View>
+      <HeaderButton title="STATS" onPress={navigation.getParam("statsPress")}/>
+        // <TouchableOpacity style={styles.navButton }onPress={navigation.getParam("statsPress")}>
+        //   <Text style={styles.navText}>STATS</Text>
+        // </TouchableOpacity>
+     
     )
   });
 
@@ -69,14 +71,17 @@ export default class Scorer extends Component {
     this.props.navigation.navigate("Stats", { match: match });
   }
 
-  endPress() {
-    let match = this.state.match.matchData;
+  endMatch(){
+   
+     let match = this.state.match.matchData;
     match.complete=true;
     var obj = null;
     getItem("matches")
       .then(data => {
-        if (!data) {
-          obj = data;
+        if (data==="none") {
+          obj = [];
+          obj.push(match)
+          setItem("matches", obj).done();
         } else {
           var index = data
             .map(function(x) {
@@ -91,10 +96,16 @@ export default class Scorer extends Component {
          
           this.setState({ allMatches: data }, () => {
             setItem("matches", this.state.allMatches).done();
+            // setItem("matches", []).done();
           });
         }
       })
-      .done();
+      .done(this.props.navigation.navigate("Home"));
+     
+      
+  }
+  endPress() {
+    this.setState({endGameVisible:true})
   }
 
   componentWillMount() {
@@ -471,6 +482,26 @@ export default class Scorer extends Component {
           </View>
         </View>
         <Modal
+          isVisible={this.state.endGameVisible}
+          animationIn={"slideInLeft"}
+          animationOut={"slideOutRight"}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Do you want to end the match?</Text>
+            <TouchableOpacity onPress={() =>{ this.endMatch()}}>
+              <View style={styles.button}>
+                <Text style={styles.modalText}>YES</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.setState({endGameVisible:false})}>
+              <View style={styles.button}>
+                <Text style={styles.modalText}>NO</Text>
+              </View>
+            </TouchableOpacity>
+           
+          </View>
+        </Modal>
+        <Modal
           isVisible={this.state.modalVisible === 1}
           animationIn={"slideInLeft"}
           animationOut={"slideOutRight"}
@@ -800,7 +831,8 @@ const styles = StyleSheet.create({
   },
   modalText: {
     color: "white",
-    fontWeight: "700"
+    fontWeight: "700",
+    fontSize: wp("4%")
   },
   navButton: {
     width: wp("16%"),

@@ -16,7 +16,7 @@ import {
   listenOrientationChange as loc,
   removeOrientationListener as rol
 } from "react-native-responsive-screen";
-
+import HeaderButton from "./headerButton";
 export class Stats extends Component {
   constructor(props) {
     super(props);
@@ -42,14 +42,12 @@ export class Stats extends Component {
   ];
 
   static navigationOptions = ({ navigation }) => ({
-   
-    
     headerRight: (
-      <View>
-       
-      </View>
+      <HeaderButton title="GAME" onPress={()=>navigation.goBack(null)} />
     ),
-   
+    headerLeft:(
+      <HeaderButton title="BACK" onPress={()=>navigation.goBack(null)} />
+    ) 
   });
 
   componentWillMount() {
@@ -59,7 +57,6 @@ export class Stats extends Component {
 
     this.setState({ match: match, matchStats: matchStats });
   }
-  componentDidMount() {}
 
   renderStatRow(title) {
     var player1;
@@ -112,13 +109,13 @@ export class Stats extends Component {
           this.state.matchStats[0].bestlegs.length == 0
             ? ""
             : this.state.matchStats[0].bestlegs[
-                this.state.matchStats[0].bestlegs.length-1
+                this.state.matchStats[0].bestlegs.length - 1
               ];
         player2 =
           this.state.matchStats[1].bestlegs.length == 0
             ? ""
             : this.state.matchStats[1].bestlegs[
-                this.state.matchStats[1].bestlegs.length-1
+                this.state.matchStats[1].bestlegs.length - 1
               ];
         break;
       case "AVG LEG":
@@ -138,7 +135,11 @@ export class Stats extends Component {
             style={styles.statTitleBox}
             onPress={() => {
               let match = this.state.match;
-              this.props.navigation.navigate("MoreStats", { match: match, title:title });
+              this.props.navigation.navigate("MoreStats", {
+                match: match,
+                title: title,
+                backKey: this.props.navigation.state.key
+              });
             }}
           >
             <View>
@@ -157,8 +158,6 @@ export class Stats extends Component {
   render() {
     return (
       <View style={styles.main}>
-   
-
         <View style={styles.top}>
           <View style={styles.playerRow}>
             <View style={styles.playerBox}>
@@ -243,7 +242,7 @@ const styles = StyleSheet.create({
     fontFamily: "normal"
   },
   scoreBox: {
-    flex: 1,
+    flex: 1.4,
     flexDirection: "row",
     backgroundColor: "red",
     alignItems: "center",
@@ -252,7 +251,7 @@ const styles = StyleSheet.create({
   scoreText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: wp("5%")
+    fontSize: wp("3.8%")
   },
   banner: {
     height: wp("7%"),
@@ -286,7 +285,7 @@ const styles = StyleSheet.create({
     marginRight: 1
   },
   statTitleBox: {
-    flex: 4.5,
+    flex: 4.0,
     flexDirection: "row",
     backgroundColor: "white",
     justifyContent: "center",
@@ -300,7 +299,7 @@ const styles = StyleSheet.create({
   statNumberText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: wp("4%"),
+    fontSize: wp("3.8%"),
     fontFamily: "normal"
   },
   statTitleText: {

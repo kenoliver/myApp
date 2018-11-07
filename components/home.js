@@ -7,14 +7,14 @@ import {
   TouchableHighlight,
   StyleSheet
 } from "react-native";
-import { logoLarge } from "../images";
+import { logoLarge, logoSpots } from "../images";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
   listenOrientationChange as loc,
   removeOrientationListener as rol
 } from "react-native-responsive-screen";
-import { setItem } from "../services/storage";
+
 export class Home extends Component {
   renderButton(title, routeName) {
     return (
@@ -29,6 +29,9 @@ export class Home extends Component {
       </View>
     );
   }
+  static navigationOptions = ({ navigation }) => ({
+   header:null
+  });
 
   render() {
    
@@ -36,7 +39,7 @@ export class Home extends Component {
       <View style={styles.container}>
        
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={logoLarge} />
+          <Image style={styles.image} source={logoSpots} />
         </View>
       
         <View style={styles.titleContainer}>
@@ -48,7 +51,7 @@ export class Home extends Component {
         {this.renderButton("New Match", "NonLeaguePlay")}
         {this.renderButton("New Player", "AddPlayer")}
         {this.renderButton("All Matches", "ViewMatches")}
-        {this.renderButton("All Players", "Main")}
+        {this.renderButton("All Players", "ViewPlayers")}
       </View>
     );
   }
@@ -58,20 +61,21 @@ const styles = StyleSheet.create({
   container: {
     padding: wp("5%"),
     flex: 1,
-    backgroundColor: "#262626",
+    backgroundColor:"#82ac1a",
+    // backgroundColor: "#262626",
     alignItems: "center"
   },
 
   imageContainer: {
-    flex: 1,
-    width: wp("60%"),
-    height: wp("22%"),
+    flex: 1.5,
+    width: wp("90%"),
+   
     
   },
 
   image: {
     flex:1,
-    width: wp("60%"),
+    width: wp("90%"),
     margin: 0,
     resizeMode: "contain"
   },
@@ -92,14 +96,21 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: "red",
-
+   
     width: wp("60%"),
     padding: wp("2%"),
     margin: wp("2%"),
     justifyContent: "center",
     alignItems: "center",
     borderRadius: wp("3%"),
-    borderColor: "rgba(0, 0, 0, 0.1)"
+    borderColor: "white",
+    // borderWidth:1,
+    shadowColor: 'black',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+   
   },
   buttonText: {
     color: "white",

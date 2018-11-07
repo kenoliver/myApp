@@ -25,7 +25,7 @@ import {
 import { countries } from "../services/countries";
 import { Match } from "../services/match";
 import { setItem, getItem } from "../services/storage";
-
+import HeaderButton from "./headerButton";
 export class AddPlayer extends Component {
   constructor() {
     super();
@@ -52,10 +52,22 @@ export class AddPlayer extends Component {
       showGameModal: false
     };
   }
+  static navigationOptions = ({ navigation }) => ({
+    headerLeft:(
+      <HeaderButton title="BACK" onPress={()=>navigation.goBack(null)} />
+    ) ,
+    
+    headerRight: (
+      <View>
+       
+      </View>
+    ),
+   
+  });
 
   componentDidMount() {
     getItem("playerList").then(data => {
-      if (data == null) {
+      if (data === null) {
         const obj = [
           { name: "Player 1", flag: "england" },
           { name: "Player 2", flag: "scotland" }
@@ -97,7 +109,8 @@ export class AddPlayer extends Component {
         onPress={() => {
           let name = this.state.player;
           let flag = this.state.flag;
-          var obj = { name: name, flag: flag };
+          let id = new Date().getTime();
+          var obj = { name: name, flag: flag, id:id };
 
           let list = this.state.playerList;
           list.push(obj);
@@ -131,13 +144,17 @@ export class AddPlayer extends Component {
             value={this.state.player}
           />
         </View>
-        <TouchableHighlight
+        <View style={{flex:1}}>
+         <TouchableHighlight
           onPress={() => this.setState({ showModal: true })}
           style={styles.statFlagBox}
         >
-          <Flag code={this.state.flag} size={32} type="flat" />
+          <Flag code={this.state.flag} size={48} type="flat" />
         </TouchableHighlight>
-        <View style={styles.statSwitchBox} />
+        
+        </View>
+       
+       
         <Modal
           onRequestClose={() => {}}
           visible={this.state.showModal}
@@ -162,10 +179,10 @@ export class AddPlayer extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Add Player</Text>
+        <Text style={styles.title}>ADD PLAYER</Text>
         {this.renderPlayerRow(0)}
 
-        {this.renderButton("New Player", "Home")}
+        {this.renderButton("SAVE", "Home")}
       </View>
     );
   }
@@ -176,16 +193,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#262626",
     padding: wp("2%"),
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center"
   },
 
   title: {
-    color: "white",
-    fontSize: wp("7%"),
+    // color: "white",
+    color: "#777777",
+    fontSize: wp("5%"),
     fontWeight: "900",
     letterSpacing: 1,
-    marginBottom: hp("5%")
+    marginTop: hp("2%"),
+    marginBottom: hp("2%")
   },
 
   button: {
@@ -210,7 +229,7 @@ const styles = StyleSheet.create({
     height: hp("6%")
   },
   statNumberBox: {
-    flex: 1.5,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -219,25 +238,25 @@ const styles = StyleSheet.create({
     marginRight: 1
   },
   statTitleBox: {
-    flex: 3,
+    flex: 3.5,
     flexDirection: "row",
-    backgroundColor: "white",
+   
     justifyContent: "center",
     alignItems: "center",
     paddingLeft: 5,
     paddingRight: 5,
     marginRight: 1,
-    borderColor: "#d9d9d9",
+    borderColor: "#404040",
     borderWidth: 1
   },
   statNumberText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: wp("4%"),
+    color: "#777777",
+   
+    fontSize: wp("3%"),
     fontFamily: "normal"
   },
   statTitleText: {
-    color: "#404040",
+    color: "white",
     fontWeight: "bold",
     fontSize: wp("4%"),
     fontFamily: "normal"
@@ -284,8 +303,12 @@ const styles = StyleSheet.create({
   },
   rowText: {
     color: "#404040",
+    fontWeight: "bold",
+    fontSize: wp("3.5%"),
+    fontFamily: "normal",
     flex: 5,
     alignSelf: "center",
+   
     paddingLeft: 10
   },
   rowFlag: {

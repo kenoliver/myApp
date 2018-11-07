@@ -8,17 +8,16 @@ export const setItem = async (key, value) => {
 }
 };
 
-export const getItem = async(key ) => {
-  let value = null;
+export const getItem = async(key) => {
+  var value =''
   try {
-    value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      value = JSON.parse(value);
-    }
+    value = await  AsyncStorage.getItem(key) || "none" ;
+    value = (value==="none") ? "none" : JSON.parse(value)
+  
   } catch (error) {
     // Error retrieving data
   }
-  return value;
+ return value
 };
 
 export const  removeItem = async(key)=> {

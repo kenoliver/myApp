@@ -26,7 +26,7 @@ import { countries } from "../services/countries";
 import { Match } from "../services/match";
 import { MatchData } from "../services/matchData";
 import { setItem , getItem } from "../services/storage";
-
+import HeaderButton from "./headerButton";
 export class NonLeaguePlay extends Component {
   constructor() {
     super();
@@ -36,7 +36,7 @@ export class NonLeaguePlay extends Component {
     this.state = {
       countryDataSource: ds.cloneWithRows(countries),
       gameDataSource: ds.cloneWithRows(["X01"]),
-    playerDataSource:[""],
+      playerDataSource: ds.cloneWithRows([{name:"Bill",flag:"US"},{name:"Ralph",flag:"scotland"}]),
       flags: ["england", "US"],
       players: ["Player 1", "Player 2"],
       playerList:[{name:"Bill",flag:"US"},{name:"Ralph",flag:"scotland"}],
@@ -54,7 +54,9 @@ export class NonLeaguePlay extends Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
-   
+    headerLeft:(
+      <HeaderButton title="BACK" onPress={()=>navigation.goBack(null)} />
+    ) ,
     
     headerRight: (
       <View>
@@ -68,24 +70,27 @@ export class NonLeaguePlay extends Component {
   componentDidMount=()=>{
     // const obj =[{name:"Player 1",flag:"england"},{name:"Player 2",flag:"scotland"}]
     // this.setState({playerList:obj})
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
 
     getItem("playerList")
     .then((data)=>{
-    
-      if(data==null){
-    
+   
+      if(data===null || data.length === 0){
+        
+       
          const obj =[{name:"Player 1",flag:"england"},{name:"Player 2",flag:"scotland"}]
           setItem('playerList',obj)
-          .then((data)=>this.setState({playerList:obj}))
+          .then((data)=>this.setState({playerList:obj,playerDataSource:ds.cloneWithRows(obj)}))
         
         }else{
-          const dataSource = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-          });  
-          this.setState({playerList:data,players:[data[0].name,data[1].name],flags:[data[0].flag,data[1].flag],playerDataSource:dataSource.cloneWithRows(data)})
+          
+         
+          this.setState({playerList:data,players:[data[0].name,data[1].name],flags:[data[0].flag,data[1].flag],playerDataSource:ds.cloneWithRows(data)})
        
         }
-
+     
     })
   
    
@@ -176,6 +181,11 @@ export class NonLeaguePlay extends Component {
   }
 
   renderPlayerRow(player) {
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+     
+    });
+     var playerDataSource = ds.cloneWithRows(this.state.playerList)
     return (
       <View style={styles.statRow}>
         <View style={styles.statNumberBox}>
@@ -364,18 +374,21 @@ export class NonLeaguePlay extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor:"#82ac1a",
     backgroundColor: "#262626",
     padding: wp("2%"),
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center"
   },
 
   title: {
+    // color: "white",
     color: "#777777",
     fontSize: wp("5%"),
     fontWeight: "900",
     letterSpacing: 1,
-    marginBottom: hp("5%")
+    marginTop: hp("2%"),
+    marginBottom: hp("2%")
   },
 
   button: {
@@ -421,9 +434,10 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   statNumberText: {
+    // color: "white",
     color: "#777777",
     // fontWeight: "bold",
-    fontSize: wp("3.5%"),
+    fontSize: wp("3.0%"),
     fontFamily: "normal",
    
   },
@@ -443,7 +457,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   statSwitchText: {
-    color: "#777777",
+    color: "white",
+    // color: "#777777",
    
     fontSize: wp("2%"),
     fontFamily: "normal"

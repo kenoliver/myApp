@@ -20,6 +20,7 @@ import NonLeaguePlay from "./components/nonLeaguePlay";
 import MoreStats from "./components/moreStats";
 import ViewLegs from "./components/viewLegs";
 import ViewMatches from "./components/viewMatches";
+import ViewPlayers from "./components/viewPlayers";
 import { createStackNavigator } from "react-navigation";
 import { widthPercentageToDP } from "react-native-responsive-screen";
 import HeaderTitle from "react-navigation-stack/dist/views/Header/HeaderTitle";
@@ -38,13 +39,14 @@ const AppNavigator = createStackNavigator(
     MoreStats: { screen: MoreStats },
     ViewLegs: { screen: ViewLegs },
     ViewMatches: { screen: ViewMatches },
+    ViewPlayers: { screen: ViewPlayers },
     NewMatch: { screen: NewMatch },
     AddPlayer: { screen: AddPlayer },
     LeaguePlay: { screen: LeaguePlay },
     NonLeaguePlay: { screen: NonLeaguePlay }
   },
   {
-    navigationOptions: {
+  navigationOptions: {
       headerStyle: {
         backgroundColor: "#262626"
       },
@@ -52,7 +54,8 @@ const AppNavigator = createStackNavigator(
       headerTitleContainerStyle: {
         justifyContent: "center"
       },
-      headerTintColor: "#777777"
+      headerTintColor: "#777777",
+     
     }
   }
 );

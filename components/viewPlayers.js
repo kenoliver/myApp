@@ -27,16 +27,12 @@ import { Match } from "../services/match";
 import HeaderButton from "./headerButton";
 import { setItem, getItem } from "../services/storage";
 
-export class ViewMatches extends Component {
+export class ViewPlayers extends Component {
   constructor() {
     super();
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
     this.state = {
-      matchesDataSource: [],
-
-      title: "NO MATCHES FOUND"
+      playersDataSource: [],
+      title: "NO PLAYERS FOUND"
     };
   }
 
@@ -48,18 +44,21 @@ export class ViewMatches extends Component {
   });
 
   componentDidMount = () => {
-    var dataSource;
-
-    getItem("matches", []).then(data => {
-      this.setState({ matchesDataSource: data });
+    getItem("playerList", []).then(data => {
+      this.setState({ playersDataSource: data });
     });
   };
 
   renderListView() {
-    if (!(this.state.matchesDataSource == null)) {
-      if (this.state.matchesDataSource.length === 0) {
+    if (!(this.state.playersDataSource === null)) {
+      if (this.state.playersDataSource.length === 0) {
         return (
-          <View style={{flex:1,justifyContent:"center",backgroundColor:"yellow"}}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center"
+            }}
+          >
             <Text style={styles.title}>{this.state.title}</Text>
           </View>
         );
@@ -67,10 +66,9 @@ export class ViewMatches extends Component {
         const ds = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2
         });
-
         return (
           <ListView
-            dataSource={ds.cloneWithRows(this.state.matchesDataSource)}
+            dataSource={ds.cloneWithRows(this.state.playersDataSource)}
             renderRow={this.renderRow.bind(this)}
           />
         );
@@ -78,57 +76,29 @@ export class ViewMatches extends Component {
     }
   }
 
-  renderRow(matchData) {
-    console.log("rendering row");
-    var newMatch = new Match();
-
-    newMatch.matchData = matchData;
-    const matchStats = matchData.players ? newMatch.allPlayerStats() : null;
-    var date = matchData.id
-      ? new Date(parseInt(matchData.id)).toDateString()
-      : "";
-    var playerName_1 = matchData.players
-      ? matchData.players[0].name
-      : "england";
-    var playerName_2 = matchData.players
-      ? matchData.players[1].name
-      : "england";
-    var flag_1 = matchData.players ? matchData.players[0].flag : "england";
-    var flag_2 = matchData.players ? matchData.players[1].flag : "england";
-    var id = matchData.id ? matchData.id : "";
-    var wins_1 = matchData.scores ? matchStats[0].checkouts.length : 0;
-    var wins_2 = matchData.scores ? matchStats[1].checkouts.length : 0;
-
+  renderRow(player) {
     return (
-      <View style={{ flex: 1 }}>
-        <TouchableHighlight
-          key={id}
-          onPress={() => {
-            this.props.navigation.navigate("Stats", { match: newMatch });
-          }}
-        >
-          <View style={styles.playerRow}>
-            <View style={styles.DateBox}>
-              <Text style={styles.DateText}>{date}</Text>
-            </View>
-            <View style={styles.playerBox}>
-              <Flag code={flag_1} size={32} type="flat" />
-              <Text style={styles.playerText}>{playerName_1}</Text>
-            </View>
-
-            <View style={styles.scoreBox}>
-              <Text style={styles.scoreText}>
-                {wins_1} - {wins_2}
-              </Text>
-            </View>
-
-            <View style={styles.playerBox}>
-              <Flag code={flag_2} size={32} type="flat" />
-              <Text style={styles.playerText}>{playerName_2}</Text>
-            </View>
+      <TouchableHighlight
+        key={player.name}
+        onPress={() => {
+          // let flags = this.state.flags;
+          // let players = this.state.players;
+          // flags[this.state.activePlayer] = player.flag;
+          // players[this.state.activePlayer] = player.name;
+          // this.setState({
+          //   flags: flags,
+          //   players: players,
+          //   showPlayerModal: false
+          // });
+        }}
+      >
+        <View style={styles.row}>
+          <Text style={styles.rowTextDark}>{player.name}</Text>
+          <View style={styles.rowFlag}>
+            <Flag code={player.flag} size={32} type="flat" />
           </View>
-        </TouchableHighlight>
-      </View>
+        </View>
+      </TouchableHighlight>
     );
   }
 
@@ -157,7 +127,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     letterSpacing: 1,
     marginBottom: hp("5%"),
-    
+    alignSelf: "center"
   },
 
   playerRow: {
@@ -182,8 +152,8 @@ const styles = StyleSheet.create({
   },
   DateText: {
     color: "#404040",
-    
-    fontSize: wp("2.5%"),
+    fontWeight: "bold",
+    fontSize: wp("3%"),
     fontFamily: "normal"
   },
   playerBox: {
@@ -203,7 +173,7 @@ const styles = StyleSheet.create({
     fontFamily: "normal"
   },
   scoreBox: {
-    flex: 1.4,
+    flex: 1,
     flexDirection: "row",
     backgroundColor: "red",
     alignItems: "center",
@@ -212,8 +182,41 @@ const styles = StyleSheet.create({
   scoreText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: wp("3.8%")
+    fontSize: wp("4%")
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#f4f4f4",
+    marginBottom: 3,
+    height: hp("7%")
+  },
+
+  rowText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: wp("4%"),
+    fontFamily: "normal",
+    flex: 5,
+    alignSelf: "center",
+
+    paddingLeft: 10
+  },
+  rowTextDark: {
+    color: "#404040",
+    fontWeight: "bold",
+    fontSize: wp("4%"),
+    fontFamily: "normal",
+    flex: 5,
+    alignSelf: "center",
+    paddingLeft: 10
+  },
+  rowFlag: {
+    flex: 1,
+    alignSelf: "center"
   }
 });
 
-export default ViewMatches;
+export default ViewPlayers;
